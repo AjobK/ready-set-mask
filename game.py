@@ -6,9 +6,9 @@ import threading
 
 WIDTH = 700         # width of the window
 HEIGHT = 800        # height of the window 
-car = Actor("racecar")
+car = Actor("racecar2")
 car.pos = 350, 560
-speed = 4
+speed = 2
 gassing = False
 
 def is_gassing():
@@ -23,7 +23,8 @@ def draw():
 def update(): 
     global gassing, speed
 
-    if gassing : car.y -= speed
+    if gassing: car.y -= speed
+    else: car.y += speed
 
 md = MaskDetector()
 
