@@ -31,26 +31,32 @@ def draw():
     screen.draw.text("STEERING " + ("STRAIGHT" if not direction else direction), (20, 45))
 
 def update(): 
-    global gassing, speed, WIDTH, HEIGHT
+    global gassing, speed, prev_angle, direction, WIDTH, HEIGHT
 
-    # Attempt to rotation using sine and cosine
-    # print(car.angle)
+    if (keyboard.right != keyboard.left):
+        if (keyboard.left):
+            car.angle += 1
+            direction = "LEFT"
 
-    # if (keyboard.left):
-    #     car.angle += 1
-    # elif (keyboard.right):
-    #     car.angle -= 1
+        if (keyboard.right):
+            car.angle -= 1
+            direction = "RIGHT"
+    else:
+        direction = "STRAIGHT"
 
-    # direction_speed_multiplier[0] = math.cos(car.angle / 50)
-    # direction_speed_multiplier[1] = math.sin(car.angle / 50)
+    direction_speed_multiplier[0] = math.sin(math.radians(car.angle))
+    direction_speed_multiplier[1] = math.cos(math.radians(car.angle))
 
-    if gassing and car.y + speed > 0: car.y -= speed * direction_speed_multiplier[1]
-    elif car.y - speed < HEIGHT: car.y += speed * direction_speed_multiplier[1]
-
-    car.x += direction_speed_multiplier[0] * speed
+    if gassing: 
+        car.pos = (car.pos[0] - direction_speed_multiplier[0] * speed, car.pos[1] - direction_speed_multiplier[1] * speed)
+    else:
+        car.pos = (car.pos[0] + direction_speed_multiplier[0] * speed, car.pos[1] + direction_speed_multiplier[1] * speed)
 
 md = MaskDetector()
-
+print(math.cos(6.28319)) # 1
+print(math.cos(4.71239))
+print(math.cos(3.14159))
+print(math.cos(1.5708))
 # recurrent
 is_gassing()
 
