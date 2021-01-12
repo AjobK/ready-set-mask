@@ -93,4 +93,10 @@ class MaskDetector:
 			(startX, startY, endX, endY) = box
 			(mask, withoutMask) = pred
 
+			color = (0, 255, 0) if mask > withoutMask else (0, 0, 255)
+			cv2.putText(frame, 'GASSING' if mask > withoutMask else 'REVERSE', (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
+			cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
+
+			cv2.imshow('facemask_gas', frame)
+
 			return mask > withoutMask

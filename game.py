@@ -10,7 +10,7 @@ HEIGHT = 800 # height of the window
 
 car = Actor("racecar2")
 car.pos = 350, 560
-speed = 2
+speed = 3
 direction_speed_multiplier = [0, 1]
 gassing = False
 # TODO: Put direction in this variable
@@ -35,11 +35,11 @@ def update():
 
     if (keyboard.right != keyboard.left):
         if (keyboard.left):
-            car.angle += 1
+            car.angle += 2
             direction = "LEFT"
 
         if (keyboard.right):
-            car.angle -= 1
+            car.angle -= 2
             direction = "RIGHT"
     else:
         direction = "STRAIGHT"
