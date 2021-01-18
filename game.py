@@ -38,11 +38,11 @@ def update():
 
     if (keyboard.right != keyboard.left):
         if (keyboard.left):
-            car.angle += 2
+            car.angle += 2 * abs(velocity) / speed
             direction = "LEFT"
 
         if (keyboard.right):
-            car.angle -= 2
+            car.angle -= 2 * abs(velocity) / speed
             direction = "RIGHT"
     else:
         direction = "STRAIGHT"
