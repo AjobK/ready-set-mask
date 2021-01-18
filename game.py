@@ -14,6 +14,8 @@ car.pos = 350, 560
 speed = 3
 direction_speed_multiplier = [0, 1]
 gassing = False
+was_gassing = False
+velocity = 0
 # TODO: Put direction in this variable
 direction = None # should be "LEFT", "RIGHT" or None
 
@@ -32,7 +34,7 @@ def draw():
     screen.draw.text("STEERING " + ("STRAIGHT" if not direction else direction), (20, 45))
 
 def update(): 
-    global gassing, speed, direction, WIDTH, HEIGHT
+    global gassing, speed, direction, velocity, WIDTH, HEIGHT
 
     if (keyboard.right != keyboard.left):
         if (keyboard.left):
@@ -48,10 +50,21 @@ def update():
     direction_speed_multiplier[0] = math.sin(math.radians(car.angle))
     direction_speed_multiplier[1] = math.cos(math.radians(car.angle))
 
+
     if gassing:
-        car.pos = (car.pos[0] - direction_speed_multiplier[0] * speed, car.pos[1] - direction_speed_multiplier[1] * speed)
+        velocity = velocity - 0.1
+
+        if (velocity <= -speed):
+            velocity = -speed
+
+        # car.pos = (car.pos[0] - direction_speed_multiplier[0] * (abs(velocity)), car.pos[1] - direction_speed_multiplier[1] * abs(velocity))
     else:
-        car.pos = (car.pos[0] + direction_speed_multiplier[0] * speed, car.pos[1] + direction_speed_multiplier[1] * speed)
+        velocity = velocity + 0.1
+
+        if (velocity >= speed):
+            velocity = speed
+
+    car.pos = (car.pos[0] + direction_speed_multiplier[0] * (velocity), car.pos[1] + direction_speed_multiplier[1] * velocity)
 
 md = MaskDetector()
 # recurrent
