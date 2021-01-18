@@ -14,7 +14,6 @@ car.pos = 350, 560
 speed = 3
 direction_speed_multiplier = [0, 1]
 gassing = False
-was_gassing = False
 velocity = 0
 # TODO: Put direction in this variable
 direction = None # should be "LEFT", "RIGHT" or None
@@ -61,6 +60,12 @@ def update():
 
         if (velocity >= speed):
             velocity = speed
+
+    new_pos = (car.pos[0] + direction_speed_multiplier[0] * (velocity), car.pos[1] + direction_speed_multiplier[1] * velocity)
+
+    # Basic edge collision detection
+    if (new_pos[0] <= 25 or new_pos[0] >= WIDTH-25 or new_pos[1] <= 25 or new_pos[1] >= HEIGHT-25):
+        velocity = 0
 
     car.pos = (car.pos[0] + direction_speed_multiplier[0] * (velocity), car.pos[1] + direction_speed_multiplier[1] * velocity)
 
