@@ -56,8 +56,6 @@ def update():
 
         if (velocity <= -speed):
             velocity = -speed
-
-        # car.pos = (car.pos[0] - direction_speed_multiplier[0] * (abs(velocity)), car.pos[1] - direction_speed_multiplier[1] * abs(velocity))
     else:
         velocity = velocity + 0.1
 
