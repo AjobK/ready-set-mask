@@ -12,8 +12,8 @@ import os
 class MaskDetector:
 	def __init__(self):
 		# load our serialized face detector model from disk
-		self.prototxtPath = r"face_detector\deploy.prototxt"
-		self.weightsPath = r"face_detector\res10_300x300_ssd_iter_140000.caffemodel"
+		self.prototxtPath = r"face_detector/deploy.prototxt"
+		self.weightsPath = r"face_detector/res10_300x300_ssd_iter_140000.caffemodel"
 		self.faceNet = cv2.dnn.readNet(self.prototxtPath, self.weightsPath)
 
 		# load the face mask detector model from disk
@@ -96,7 +96,5 @@ class MaskDetector:
 			color = (0, 255, 0) if mask > withoutMask else (0, 0, 255)
 			cv2.putText(frame, 'GASSING' if mask > withoutMask else 'REVERSE', (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
 			cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
-
-			cv2.imshow('facemask_gas', frame)
-
+			
 			return mask > withoutMask
