@@ -14,7 +14,6 @@ wallImage = pygame.image.load("images/wall.png")
 wallImageSize = 10
 wallImage = pygame.transform.scale(wallImage, (wallImageSize, wallImageSize))
 
-
 coords = []
 
 def draw():
@@ -74,7 +73,6 @@ def add_wall(pos):
         print('appended')
         coords.append(pos)
     
-
 def on_mouse_move(pos, rel, buttons):
     global coords
     if(mouse.LEFT in buttons):
