@@ -183,13 +183,11 @@ def checkWallCollision(pos, angle):
                         lineTopY < wallBottom and 
                         lineTopY > wallTop):
                         driving = False
-                        print("hit top")
                     if(lineTopX2 < wallRight and
                         lineTopX2 > wallLeft and
                         lineTopY2 < wallBottom and 
                         lineTopY2 > wallTop):
                         driving = False
-                        print("hit top")
                 else:
                     lineBottomX = car.centerx - topX - x * (math.sin(math.radians(car.angle+90)))
                     lineBottomY = car.centery - topY - x * (math.cos(math.radians(car.angle+90)))
@@ -200,13 +198,11 @@ def checkWallCollision(pos, angle):
                         lineBottomY < wallBottom and 
                         lineBottomY > wallTop):
                         driving = False
-                        print("hit bottom")
                     if(lineBottomX2 < wallRight and
                         lineBottomX2 > wallLeft and
                         lineBottomY2 < wallBottom and 
                         lineBottomY2 > wallTop):
                         driving = False
-                        print("hit bottom")
     # print(driving)
     return driving 
 
