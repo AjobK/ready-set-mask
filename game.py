@@ -52,14 +52,14 @@ def draw():
     screen.draw.text("STEERING " + ("STRAIGHT" if not direction else direction), (20, 45))
     # Chunky boi
     if(len(triggerBoxes) == 0):
-        print('Creating triggerboxes')
+        # print('Creating triggerboxes')
         boxStraight = TriggerBox(250,100,200,100, (200,0,0))
         boxBottom = TriggerBox(250, 600, 200, 100,(200,0,0) )
         triggerBoxes.append(boxBottom)
         triggerBoxes.append(boxStraight)
 
-    print('Triggerboxes')
-    print(triggerBoxes)
+    # print('Triggerboxes')
+    # print(triggerBoxes)
     boxStraight = triggerBoxes[0]
     boxBottom = triggerBoxes[1]
     
@@ -136,7 +136,7 @@ def update():
 
 def drawWall():
     global wallImage, walls
-    print('Gonna draw wall now')
+    # print('Gonna draw wall now')
     for wall in walls: 
         screen.blit(wallImage, wall)
 
@@ -201,7 +201,7 @@ def checkWallCollision(pos, angle):
                     lineBottomY2 < wallBottom and 
                     lineBottomY2 > wallTop):
                     driving = False
-    print(driving)
+    # print(driving)
     return driving 
 
 md = MaskDetector()
