@@ -39,7 +39,9 @@ class TriggerBox:
 
 def is_gassing():
     global gassing
+    global direction;
 
+    direction = md.detectHand()
     gassing = md.is_gassing()
     threading.Timer(0.3, is_gassing).start()
 
@@ -98,16 +100,12 @@ def draw():
 def update(): 
     global gassing, speed, direction, velocity, WIDTH, HEIGHT
 
-    if (keyboard.right != keyboard.left):
-        if (keyboard.left):
-            car.angle += 2 * abs(velocity) / speed
-            direction = "LEFT"
+    print(direction)
+    if (direction == "LEFT"):
+        car.angle += 2 * abs(velocity) / speed
+    if (direction == "RIGHT"):
+        car.angle -= 2 * abs(velocity) / speed
 
-        if (keyboard.right):
-            car.angle -= 2 * abs(velocity) / speed
-            direction = "RIGHT"
-    else:
-        direction = "STRAIGHT"
 
     direction_speed_multiplier[0] = math.sin(math.radians(car.angle))
     direction_speed_multiplier[1] = math.cos(math.radians(car.angle))

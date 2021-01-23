@@ -1,4 +1,5 @@
 # import the necessary packages
+from handDetection import handDetector
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
@@ -19,9 +20,37 @@ class MaskDetector:
 		# load the face mask detector model from disk
 		self.maskNet = load_model("mask_detector.model")
 
+		self.handDetector = handDetector();
+		self.medium = self.getMedium();
+
 		# initialize the video stream
 		print("[INFO] starting video stream...")
 		self.vs = VideoStream(src=0).start()
+    
+	def getMedium(self):
+		# Open Video
+		cap = cv2.VideoCapture(0)
+
+		# Randomly select 25 frames
+		frameIds = cap.get(cv2.CAP_PROP_FRAME_COUNT) * np.random.uniform(size=25)
+
+		# Store selected frames in an array
+		frames = []
+		for fid in frameIds:
+			cap.set(cv2.CAP_PROP_POS_FRAMES, fid)
+			ret, frame = cap.read()
+			frames.append(frame)
+
+		# Calculate the median along the time axis
+		medianFrame = np.median(frames, axis=0).astype(dtype=np.uint8)    
+
+		# Reset frame number to 0
+		cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+
+		# Convert background to grayscale
+		grayMedianFrame = cv2.cvtColor(medianFrame, cv2.COLOR_BGR2GRAY)
+		
+		return grayMedianFrame;
 
 	def detect_and_predict_mask(self, frame, faceNet, maskNet):
 		# grab the dimensions of the frame and then construct a blob
@@ -98,3 +127,23 @@ class MaskDetector:
 			cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
 			
 			return mask > withoutMask
+
+	def detectHand(self):
+		capture = self.vs;
+	
+		frame = capture.read()
+		# Convert current frame to grayscale
+		frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		# Calculate absolute difference of current frame and 
+		# the median frame
+		dframe = cv2.absdiff(frame, self.medium)
+		# Treshold to binarize
+		th, frame = cv2.threshold(dframe, 30, 255, cv2.THRESH_BINARY)
+		# Display image
+		status = "STRAIGHT"
+		try:
+			status = self.handDetector.startHandDetection(frame);
+		except:
+			pass;
+
+		return status;
