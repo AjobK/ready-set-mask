@@ -57,6 +57,7 @@ def draw():
     car.draw()
     screen.draw.text("GASSING" if gassing else "REVERSE", (20, 20))
     screen.draw.text("STEERING " + ("STRAIGHT" if not direction else direction), (20, 45))
+    screen.draw.text("PRESS R TO RESTART", (20, 70))
     # Chunky boi
     # if(len(triggerBoxes) == 0):
     #     # print('Creating triggerboxes')
