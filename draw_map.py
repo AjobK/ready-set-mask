@@ -13,7 +13,7 @@ class TriggerBox:
     def __init__(self,x,y):
         self.x = x
         self.y = y
-        self.width = 200
+        self.width = 100
         self.height = 100
         self.color = (200,0,0)
 
@@ -26,8 +26,8 @@ class CarSpawn:
     def __init__(self,x,y):
         self.x = x
         self.y = y
-        self.width = 20
-        self.height = 20
+        self.width = 27
+        self.height = 49
         self.color = (0, 200, 0)
 
 WIDTH = 700 # width of the window
