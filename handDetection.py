@@ -1,8 +1,6 @@
 import cv2;
 import numpy as np;
 import math
-from threading import Thread
-from skimage import data, filters
 
 class handDetector():
     def findContours(self,mask):
