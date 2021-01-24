@@ -11,7 +11,7 @@ HEIGHT = 800 # height of the window
 
 car = Actor("racecar2")
 car.pos = 350, 560
-speed = 3
+speed = 2
 direction_speed_multiplier = [0, 1]
 gassing = False
 velocity = 0
@@ -111,12 +111,12 @@ def update():
 
 
     if gassing:
-        velocity = velocity - 0.1
+        velocity = velocity - 0.075
 
         if (velocity <= -speed):
             velocity = -speed
     else:
-        velocity = velocity + 0.1
+        velocity = velocity + 0.075
 
         if (velocity >= speed):
             velocity = speed
