@@ -1,4 +1,5 @@
 # import the necessary packages
+from handDetection import handDetector
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
@@ -12,16 +13,44 @@ import os
 class MaskDetector:
 	def __init__(self):
 		# load our serialized face detector model from disk
-		self.prototxtPath = r"face_detector\deploy.prototxt"
-		self.weightsPath = r"face_detector\res10_300x300_ssd_iter_140000.caffemodel"
+		self.prototxtPath = r"face_detector/deploy.prototxt"
+		self.weightsPath = r"face_detector/res10_300x300_ssd_iter_140000.caffemodel"
 		self.faceNet = cv2.dnn.readNet(self.prototxtPath, self.weightsPath)
 
 		# load the face mask detector model from disk
 		self.maskNet = load_model("mask_detector.model")
 
+		self.handDetector = handDetector();
+		self.medium = self.getMedium();
+
 		# initialize the video stream
 		print("[INFO] starting video stream...")
 		self.vs = VideoStream(src=0).start()
+    
+	def getMedium(self):
+		# Open Video
+		cap = cv2.VideoCapture(0)
+
+		# Randomly select 25 frames
+		frameIds = cap.get(cv2.CAP_PROP_FRAME_COUNT) * np.random.uniform(size=25)
+
+		# Store selected frames in an array
+		frames = []
+		for fid in frameIds:
+			cap.set(cv2.CAP_PROP_POS_FRAMES, fid)
+			ret, frame = cap.read()
+			frames.append(frame)
+
+		# Calculate the median along the time axis
+		medianFrame = np.median(frames, axis=0).astype(dtype=np.uint8)    
+
+		# Reset frame number to 0
+		cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+
+		# Convert background to grayscale
+		grayMedianFrame = cv2.cvtColor(medianFrame, cv2.COLOR_BGR2GRAY)
+		
+		return grayMedianFrame;
 
 	def detect_and_predict_mask(self, frame, faceNet, maskNet):
 		# grab the dimensions of the frame and then construct a blob
@@ -96,7 +125,31 @@ class MaskDetector:
 			color = (0, 255, 0) if mask > withoutMask else (0, 0, 255)
 			cv2.putText(frame, 'GASSING' if mask > withoutMask else 'REVERSE', (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
 			cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
-
-			cv2.imshow('facemask_gas', frame)
-
+			
 			return mask > withoutMask
+
+	def detectHand(self):
+		capture = self.vs;
+	
+		frame_colorful = capture.read()
+
+		# Convert current frame to grayscale
+		frame = cv2.cvtColor(frame_colorful, cv2.COLOR_BGR2GRAY)
+		# Calculate absolute difference of current frame and 
+		# the median frame
+		dframe = cv2.absdiff(frame, self.medium)
+		# Treshold to binarize
+		th, frame = cv2.threshold(dframe, 30, 255, cv2.THRESH_BINARY)
+		# Display image
+		status = "STRAIGHT"
+
+		cv2.rectangle(frame_colorful, (self.handDetector.leftBox.startX, self.handDetector.leftBox.startY), (self.handDetector.leftBox.endX, self.handDetector.leftBox.endY), (0,255,0), 2)
+		cv2.rectangle(frame_colorful, (self.handDetector.rightBox.startX, self.handDetector.rightBox.startY), (self.handDetector.rightBox.endX, self.handDetector.rightBox.endY), (0,255,0), 2)
+		cv2.imshow("hands", cv2.flip(frame_colorful, 1))
+
+		try:
+			status = self.handDetector.startHandDetection(frame);
+		except:
+			pass;
+
+		return status;
