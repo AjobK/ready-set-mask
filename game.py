@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import csv
 import pgzrun
 import pygame
 from detect_mask_video import MaskDetector
@@ -22,6 +23,9 @@ carImage = pygame.image.load("images/racecar2.png")
 wallImage = pygame.image.load("images/wall.png")
 wallImage = pygame.transform.scale(wallImage, (10, 10))
 walls = []
+levelNumber = 1
+pressingRestart = False
+# surface = pygame.display.set_mode((400,300))
 
 class TriggerBox:
     x = 0
@@ -52,63 +56,30 @@ def draw():
     car.draw()
     screen.draw.text("GASSING" if gassing else "REVERSE", (20, 20))
     screen.draw.text("STEERING " + ("STRAIGHT" if not direction else direction), (20, 45))
-    # Chunky boi
-    if(len(triggerBoxes) == 0):
-        # print('Creating triggerboxes')
-        boxStraight = TriggerBox(250,100,200,100, (200,0,0))
-        boxBottom = TriggerBox(250, 600, 200, 100,(200,0,0) )
-        triggerBoxes.append(boxBottom)
-        triggerBoxes.append(boxStraight)
-
-    # print('Triggerboxes')
-    # print(triggerBoxes)
-    boxStraight = triggerBoxes[0]
-    boxBottom = triggerBoxes[1]
+    screen.draw.text("PRESS R TO RESTART", (20, 70))
     
-    screen.draw.rect(Rect((boxStraight.x,boxStraight.y),(boxStraight.width,boxStraight.height)), boxStraight.color)
-    screen.draw.rect(Rect((boxBottom.x,boxBottom.y),(boxBottom.width,boxBottom.height)), boxBottom.color)
-
-    if len(walls) == 0:
-        counter = 5
-        richting = True
-        startY = 0
-        stopY = 800
-        stepSize = 10
-        for y in range(startY,stopY,stepSize):
-            rect = wallImage.get_rect()
-            line1X = 275 - counter
-            rect = rect.move((line1X, y))
-            walls.append(rect)
-
-            rect = wallImage.get_rect()
-            line2X = 425 - counter
-            rect = rect.move((line2X, y))
-            walls.append(rect)
-
-            if counter == 150:
-                richting = False
-            elif counter == 0:
-                richting = True
-
-            if richting:
-                counter = counter + 5
-            else: 
-                counter = counter - 5
+    for triggerBox in triggerBoxes:
+        screen.draw.rect(Rect((triggerBox.x,triggerBox.y),(triggerBox.width,triggerBox.height)), triggerBox.color)
     drawWall()
 
-
 def update(): 
-    global gassing, speed, direction, velocity, WIDTH, HEIGHT
+    global gassing, speed, direction, velocity, WIDTH, HEIGHT, pressingRestart, levelNumber
 
     if (direction == "LEFT"):
         car.angle += 2 * abs(velocity) / speed
     if (direction == "RIGHT"):
         car.angle -= 2 * abs(velocity) / speed
-        display_surface.blit(image, (0, 0)) 
     
 
     direction_speed_multiplier[0] = math.sin(math.radians(car.angle))
     direction_speed_multiplier[1] = math.cos(math.radians(car.angle))
+
+    # Level restart
+    if keyboard.K_r and not pressingRestart:
+        pressingRestart = True
+    elif not keyboard.K_r and pressingRestart:
+        pressingRestart = False
+        read_map('./maps/level_' + str(levelNumber) + '.csv')
 
 
     if gassing:
@@ -134,13 +105,16 @@ def update():
 
 def drawWall():
     global wallImage, walls
-    # print('Gonna draw wall now')
     for wall in walls: 
         screen.blit(wallImage, wall)
 
 def checkCollision(pos, angle):
+    global levelNumber
+
     for triggerBox in triggerBoxes:
         if triggerBox.x  < pos[0]-15 and triggerBox.x + triggerBox.width > pos[0]-15 and triggerBox.y < pos[1]-15 and triggerBox.y  + triggerBox.height > pos[1]-15:
+            levelNumber += 1
+            read_map('./maps/level_' + str(levelNumber) + '.csv')
             triggerBox.color = (0, 255, 0)
         
     return checkWallCollision(pos,angle)
@@ -224,6 +198,34 @@ def startScreen():
                 pgzrun.go()
 
             pygame.display.update()    
+
+def read_map(mapPath):
+    global triggerBoxes, velocity, walls
+
+    velocity = 0
+    car.angle = 0
+    triggerBoxes = []
+    walls = []
+
+    triggerBox = None
+    coords = None
+    with open(mapPath, 'r') as f:
+        reader = csv.reader(f)
+        firstLine = next(reader)
+        if(firstLine[0] == 'TRIGGERBOX'):
+            triggerBoxes.append(TriggerBox(int(firstLine[1]), int(firstLine[2]), 100, 100, (200, 0, 0)))
+        secondLine = next(reader)
+        if(secondLine[0] == 'CARSPAWN'):
+            car.pos = (int(secondLine[1]), int(secondLine[2]))
+            
+        coords = [(int(row[0]), int(row[1])) for row in reader]
+
+        for coord in coords:
+            rect = wallImage.get_rect()
+            rect = rect.move(coord)
+            walls.append(rect)
+
+read_map('./maps/level_' + str(levelNumber) + '.csv')
+
 md = MaskDetector()
-# recurrent
 startScreen();

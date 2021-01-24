@@ -4,7 +4,7 @@ import math
 
 class handDetector():
     def findContours(self,mask):
-            #find contours
+        #find contours
         contours,hierarchy= cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
         #find contour of max area(hand)
@@ -32,7 +32,6 @@ class handDetector():
         hull = cv2.convexHull(approx, returnPoints=False)
         return cv2.convexityDefects(approx, hull)
         
-        # l = no. of defects
     def findingFinger(self,defects,approx):
         fingers=0
         for i in range(defects.shape[0]):
@@ -55,7 +54,6 @@ class handDetector():
             # apply cosine rule here
             angle = math.acos((b**2 + c**2 - a**2)/(2*b*c)) * 57
                 
-            
             # ignore angles > 90 and ignore points very close to convex hull(they generally come due to noise)
             if angle <= 90 and d>30:
                 fingers += 1
@@ -75,14 +73,11 @@ class handDetector():
         if leftFingers>=3:
             leftHandOpen = True;
         
-        #right text
         rightFingers+=1
         if rightFingers>=3:
             rightHandOpen = True;
         
-        if leftHandOpen & rightHandOpen:
-            return "STRAIGHT"
-        elif leftHandOpen:
+        if leftHandOpen:
             return "RIGHT"
         elif rightHandOpen:
             return "LEFT"
