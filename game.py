@@ -26,6 +26,7 @@ wallImage = pygame.image.load("images/wall.png")
 wallImage = pygame.transform.scale(wallImage, (10, 10))
 walls = []
 levelNumber = 1
+pressingRestart = False
 # surface = pygame.display.set_mode((400,300))
 
 class TriggerBox:
@@ -102,7 +103,7 @@ def draw():
 
 
 def update(): 
-    global gassing, speed, direction, velocity, WIDTH, HEIGHT
+    global gassing, speed, direction, velocity, WIDTH, HEIGHT, pressingRestart, levelNumber
 
     if (direction == "LEFT"):
         car.angle += 2 * abs(velocity) / speed
@@ -112,6 +113,15 @@ def update():
 
     direction_speed_multiplier[0] = math.sin(math.radians(car.angle))
     direction_speed_multiplier[1] = math.cos(math.radians(car.angle))
+
+    # print('KEY?')
+
+    # Level restart
+    if keyboard.K_r and not pressingRestart:
+        pressingRestart = True
+    elif not keyboard.K_r and pressingRestart:
+        pressingRestart = False
+        read_map('./maps/level_' + str(levelNumber) + '.csv')
 
 
     if gassing:
