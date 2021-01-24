@@ -131,9 +131,10 @@ class MaskDetector:
 	def detectHand(self):
 		capture = self.vs;
 	
-		frame = capture.read()
+		frame_colorful = capture.read()
+
 		# Convert current frame to grayscale
-		frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		frame = cv2.cvtColor(frame_colorful, cv2.COLOR_BGR2GRAY)
 		# Calculate absolute difference of current frame and 
 		# the median frame
 		dframe = cv2.absdiff(frame, self.medium)
@@ -141,6 +142,11 @@ class MaskDetector:
 		th, frame = cv2.threshold(dframe, 30, 255, cv2.THRESH_BINARY)
 		# Display image
 		status = "STRAIGHT"
+
+		cv2.rectangle(frame_colorful, (self.handDetector.leftBox.startX, self.handDetector.leftBox.startY), (self.handDetector.leftBox.endX, self.handDetector.leftBox.endY), (0,255,0), 2)
+		cv2.rectangle(frame_colorful, (self.handDetector.rightBox.startX, self.handDetector.rightBox.startY), (self.handDetector.rightBox.endX, self.handDetector.rightBox.endY), (0,255,0), 2)
+		#cv2.imshow("hands", cv2.flip(frame_colorful, 1))
+
 		try:
 			status = self.handDetector.startHandDetection(frame);
 		except:

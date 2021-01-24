@@ -11,7 +11,7 @@ HEIGHT = 800 # height of the window
 
 car = Actor("racecar2")
 car.pos = 350, 560
-speed = 3
+speed = 2
 direction_speed_multiplier = [0, 1]
 gassing = False
 velocity = 0
@@ -22,7 +22,6 @@ carImage = pygame.image.load("images/racecar2.png")
 wallImage = pygame.image.load("images/wall.png")
 wallImage = pygame.transform.scale(wallImage, (10, 10))
 walls = []
-# surface = pygame.display.set_mode((400,300)) 
 
 class TriggerBox:
     x = 0
@@ -40,10 +39,13 @@ class TriggerBox:
 def is_gassing():
     global gassing
     global direction;
-
+    for event in pygame.event.get() : 
+            if event.type == pygame.KEYDOWN:
+                print("test")
     direction = md.detectHand()
     gassing = md.is_gassing()
     threading.Timer(0.3, is_gassing).start()
+
 
 def draw():
     global gassing
@@ -104,19 +106,20 @@ def update():
         car.angle += 2 * abs(velocity) / speed
     if (direction == "RIGHT"):
         car.angle -= 2 * abs(velocity) / speed
-
+        display_surface.blit(image, (0, 0)) 
+    
 
     direction_speed_multiplier[0] = math.sin(math.radians(car.angle))
     direction_speed_multiplier[1] = math.cos(math.radians(car.angle))
 
 
     if gassing:
-        velocity = velocity - 0.1
+        velocity = velocity - 0.075
 
         if (velocity <= -speed):
             velocity = -speed
     else:
-        velocity = velocity + 0.1
+        velocity = velocity + 0.075
 
         if (velocity >= speed):
             velocity = speed
@@ -200,49 +203,29 @@ def checkWallCollision(pos, angle):
                         lineBottomY2 < wallBottom and 
                         lineBottomY2 > wallTop):
                         driving = False
-    # print(driving)
-    return driving 
+    return driving
+
 def startScreen():
-    pygame.init()  
-    res = (800,500)    
-    screen = pygame.display.set_mode(res)  
-    color = (255,255,255)  
-    color_light = (170,170,170)  
-    color_dark = (100,100,100)  
-    width = screen.get_width()  
-    height = screen.get_height()  
-    smallfont = pygame.font.SysFont('Corbel',35)  
-    text = smallfont.render('start' , True , color)  
+    pygame.init() 
     
-    while True:  
-        
-        for ev in pygame.event.get():  
-            
-            if ev.type == pygame.QUIT:  
-                pygame.quit()  
-                
-            if ev.type == pygame.MOUSEBUTTONDOWN:  
-                if width/2-75 <= mouse[0] <= width/2+140 and height/4 <= mouse[1] <= height/4+40:  
-                    is_gassing()
-                    pgzrun.go()
-                    pygame.quit()  
-                    
-        screen.fill((0,0,0))  
-        
-        mouse = pygame.mouse.get_pos()  
-        
-        # changes to lighter shade  
-        if width/2-75 <= mouse[0] <= width/2+140 and height/4 <= mouse[1] <= height/4+40:  
-            pygame.draw.rect(screen,color_light,[width/2-75,height/4,140,40])  
-            
-        else:  
-            pygame.draw.rect(screen,color_dark,[width/2-75,height/4,140,40])  
-        
-        # superimposing the text onto our button  
-        screen.blit(text , (width/2-25,height/4))  
-        
-        # updates the frames of the game  
-        pygame.display.update()      
+    X = 800
+    Y = 500
+    
+    display_surface = pygame.display.set_mode((X, Y )) 
+    
+    pygame.display.set_caption('Ready Set Mask') 
+    
+    image = pygame.image.load('images/startScreen.png') 
+    
+    while True : 
+        display_surface.blit(image, (0, 0)) 
+    
+        for event in pygame.event.get() : 
+            if event.type == pygame.KEYDOWN : 
+                is_gassing()
+                pgzrun.go()
+
+            pygame.display.update()    
 md = MaskDetector()
 # recurrent
 startScreen();
