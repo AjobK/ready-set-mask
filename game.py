@@ -100,7 +100,6 @@ def draw():
 def update(): 
     global gassing, speed, direction, velocity, WIDTH, HEIGHT
 
-    print(direction)
     if (direction == "LEFT"):
         car.angle += 2 * abs(velocity) / speed
     if (direction == "RIGHT"):

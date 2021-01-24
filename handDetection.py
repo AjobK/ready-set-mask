@@ -74,14 +74,12 @@ class handDetector():
         rightHandOpen = False;
 
         leftFingers+=1
-        #print corresponding gestures which are in their ranges
-        if leftFingers>=4:
+        if leftFingers>=3:
             leftHandOpen = True;
         
         #right text
         rightFingers+=1
-        #print corresponding gestures which are in their ranges
-        if rightFingers>=4:
+        if rightFingers>=3:
             rightHandOpen = True;
         
         if leftHandOpen & rightHandOpen:
