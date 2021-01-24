@@ -39,9 +39,7 @@ class TriggerBox:
 def is_gassing():
     global gassing
     global direction;
-    for event in pygame.event.get() : 
-            if event.type == pygame.KEYDOWN:
-                print("test")
+
     direction = md.detectHand()
     gassing = md.is_gassing()
     threading.Timer(0.3, is_gassing).start()
