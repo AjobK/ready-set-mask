@@ -226,6 +226,7 @@ def read_map(mapPath):
     global triggerBoxes, velocity, walls
 
     velocity = 0
+    car.angle = 0
     triggerBoxes = []
     walls = []
 
