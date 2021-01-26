@@ -20,8 +20,8 @@ class MaskDetector:
 		# load the face mask detector model from disk
 		self.maskNet = load_model("mask_detector.model")
 
-		self.handDetector = handDetector();
-		self.medium = self.getMedium();
+		self.handDetector = handDetector()
+		self.medium = self.getMedium()
 
 		# initialize the video stream
 		print("[INFO] starting video stream...")
@@ -50,7 +50,7 @@ class MaskDetector:
 		# Convert background to grayscale
 		grayMedianFrame = cv2.cvtColor(medianFrame, cv2.COLOR_BGR2GRAY)
 		
-		return grayMedianFrame;
+		return grayMedianFrame
 
 	def detect_and_predict_mask(self, frame, faceNet, maskNet):
 		# grab the dimensions of the frame and then construct a blob
@@ -129,7 +129,7 @@ class MaskDetector:
 			return mask > withoutMask
 
 	def detectHand(self):
-		capture = self.vs;
+		capture = self.vs
 	
 		frame_colorful = capture.read()
 
@@ -145,11 +145,15 @@ class MaskDetector:
 
 		cv2.rectangle(frame_colorful, (self.handDetector.leftBox.startX, self.handDetector.leftBox.startY), (self.handDetector.leftBox.endX, self.handDetector.leftBox.endY), (0,255,0), 2)
 		cv2.rectangle(frame_colorful, (self.handDetector.rightBox.startX, self.handDetector.rightBox.startY), (self.handDetector.rightBox.endX, self.handDetector.rightBox.endY), (0,255,0), 2)
-		#cv2.imshow("hands", cv2.flip(frame_colorful, 1))
 
 		try:
-			status = self.handDetector.startHandDetection(frame);
+			cv2.imshow("hands", cv2.flip(frame_colorful, 1))
 		except:
-			pass;
+			pass
 
-		return status;
+		try:
+			status = self.handDetector.startHandDetection(frame)
+		except:
+			pass
+
+		return status

@@ -1,5 +1,5 @@
-import cv2;
-import numpy as np;
+import cv2
+import numpy as np
 import math
 
 class handDetector():
@@ -15,7 +15,7 @@ class handDetector():
         #approx the contour a little
         epsilon = 0.0005*cv2.arcLength(contours,True)
         approx= cv2.approxPolyDP(contours,epsilon,True)
-        return approx;
+        return approx
         
     def findCovexHull(self,contours, approx):
         #make convex hull around hand
@@ -63,19 +63,19 @@ class handDetector():
         
             #draw lines around hand
             #cv2.line(self.roi,start, end, [0,255,0], 2)
-        return fingers;
+        return fingers
 
     def getResultDetection(self, leftFingers, rightFingers):
-        leftHandOpen = False;
-        rightHandOpen = False;
+        leftHandOpen = False
+        rightHandOpen = False
 
         leftFingers+=1
         if leftFingers>=3:
-            leftHandOpen = True;
+            leftHandOpen = True
         
         rightFingers+=1
         if rightFingers>=3:
-            rightHandOpen = True;
+            rightHandOpen = True
         
         if leftHandOpen:
             return "RIGHT"
@@ -85,7 +85,7 @@ class handDetector():
             return "STRAIGHT"
 
     def startHandDetection(self, frame):
-        self.frame = frame;
+        self.frame = frame
         
         #creating a roi for both hands
         self.roiLeft = self.frame[self.leftBox.startY:self.leftBox.endY, self.leftBox.startX:self.leftBox.endX]
@@ -95,15 +95,15 @@ class handDetector():
         self.kernel = np.ones((3,3),np.uint8)
 
         #fill dark sport in the hand to make it easier to get the contours
-        self.maskLeftHand = self.roiLeft;
-        self.maskRightHand = self.roiRight;
+        self.maskLeftHand = self.roiLeft
+        self.maskRightHand = self.roiRight
 
         # find the countours in the hand
-        contoursLeftHand = self.findContours(self.maskLeftHand);
-        contoursRightHand = self.findContours(self.maskRightHand);
+        contoursLeftHand = self.findContours(self.maskLeftHand)
+        contoursRightHand = self.findContours(self.maskRightHand)
 
-        approxLeftHand = self.getApprox(contoursLeftHand);
-        approxRightHand = self.getApprox(contoursRightHand);
+        approxLeftHand = self.getApprox(contoursLeftHand)
+        approxRightHand = self.getApprox(contoursRightHand)
 
         #finding the convex hull for
         defectsLeft = self.findCovexHull(contoursLeftHand,approxLeftHand)
@@ -113,7 +113,7 @@ class handDetector():
         leftFingers = self.findingFinger(defectsLeft, approxLeftHand)
         rightFingers = self.findingFinger(defectsRight, approxRightHand)
 
-        return self.getResultDetection(leftFingers,rightFingers);
+        return self.getResultDetection(leftFingers,rightFingers)
 
     def __init__(self):
         self.leftBox = handBox(0,0,250,250)

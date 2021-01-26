@@ -42,7 +42,7 @@ class TriggerBox:
 
 def is_gassing():
     global gassing
-    global direction;
+    global direction
 
     direction = md.detectHand()
     gassing = md.is_gassing()
@@ -228,4 +228,4 @@ def read_map(mapPath):
 read_map('./maps/level_' + str(levelNumber) + '.csv')
 
 md = MaskDetector()
-startScreen();
+startScreen()
