@@ -120,7 +120,7 @@ def checkCollision(pos, angle):
     return checkWallCollision(pos,angle)
 
 def checkWallCollision(pos, angle):
-    global carImage
+    global carImage, velocity
 
     driving = True
     carWidth = carImage.get_width()
@@ -145,7 +145,7 @@ def checkWallCollision(pos, angle):
             endY > wallTop
             ):
             for x in range(int(carWidth/2)):
-                if(not gassing):
+                if(velocity > 0):
                     lineTopX = car.centerx + topX - x * (math.sin(math.radians(car.angle+90)))
                     lineTopY = car.centery + topY - x * (math.cos(math.radians(car.angle+90)))
                     lineTopX2 = car.centerx + topX + x * (math.sin(math.radians(car.angle+90)))
@@ -160,7 +160,7 @@ def checkWallCollision(pos, angle):
                         lineTopY2 < wallBottom and 
                         lineTopY2 > wallTop):
                         driving = False
-                else:
+                elif(velocity < 0):
                     lineBottomX = car.centerx - topX - x * (math.sin(math.radians(car.angle+90)))
                     lineBottomY = car.centery - topY - x * (math.cos(math.radians(car.angle+90)))
                     lineBottomX2 = car.centerx - topX + x * (math.sin(math.radians(car.angle+90)))
